@@ -1,12 +1,18 @@
-## DevOps Project for Beginners   
+## End-to-End DevOps
 
-1. ssh into an ec2 instance, and download jenkins and java
-2. "service jenkins start" to start the jenkins server
-3. access jenkins with public ip and port
-4. next, need to integrate github with jenkins
-5. install git on jenkins instance
-6. install github plugin on jenkins GUI
-7. Roadblock: jenkins uses "master" not "main" by default  
+1. ssh into an ec2 instance, and download jenkins and java (we create security groups that allow access from port 8080 for when we need to access our webapps
+
+
+3. "service jenkins start" to start the jenkins server
+4. access jenkins with public ip and port
+
+   
+<img width="639" alt="Screenshot 2023-11-11 at 5 52 00 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/22fc8cfa-0573-4cc2-aa7b-2628ce88f948">
+
+6. next, need to integrate github with jenkins
+7. install git on jenkins instance
+8. install github plugin on jenkins GUI
+9. Roadblock: jenkins uses "master" not "main" by default  
 
 Went into the EC2 server, started the jenkins server, then added files to support git, java and maven
 
