@@ -63,5 +63,16 @@ Next we create a jenkins job "buildAndDeployServer" that builds the webapp on th
 
 <img width="1689" alt="Screenshot 2023-11-11 at 10 13 44 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/d30cc4ce-297b-4591-ba3f-af66ca193214">
 
+And now we can see our webapp running on Tomcat:
 
+<img width="651" alt="Screenshot 2023-11-11 at 10 31 34 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/c1303646-ac7d-466c-ac6c-3ed26dab81d2">
+
+But I ran this job MANUALLY. I want it to run every time I make changes to my code. So we set a build trigger for code changes in Jenkins. We can poll the software configuration management, which is a cron job that checks to see if the there are changes to the code, and only runs if there are changes. The current configuration I have set up uses a wildcard syntax to check the server every minute:
+
+<img width="1089" alt="Screenshot 2023-11-11 at 10 38 07 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/b8a0e8c9-e6cd-4b66-a873-df43c1fd465c">
+
+And here is a job running automatically after a code change:
+<img width="270" alt="Screenshot 2023-11-11 at 10 52 11 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/309f62a1-c3c6-489c-9881-ca31f949cb04">
+
+<img width="375" alt="Screenshot 2023-11-11 at 10 43 09 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/2e3c248e-dbbb-4f25-bf78-48926aa63c06">
 
