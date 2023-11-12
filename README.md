@@ -35,3 +35,13 @@ Went into the EC2 server, started the jenkins server, then added files to suppor
 12. Here we can see our build artifacts from the maven webapp job
 
 ![image](https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/4360d000-df4a-4217-bb2d-4dad8e6fcb1e)
+
+13. Now we setup the Tomcat server similarly
+    
+15. Had to remove default permissions, and update it so we can have admin access. Also created some shortcuts for starting and stoppping the server
+
+ <img width="863" alt="Screenshot 2023-11-11 at 6 10 35 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/3582e4a1-4067-4d7e-8f02-3e2c0d62a36b">
+
+ 16. and then we login to the tomcat manager console
+
+<img width="1647" alt="Screenshot 2023-11-11 at 6 14 07 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/494d759c-0c28-475e-9130-bb13b6e51889">
