@@ -7,7 +7,7 @@ Visual Workflow
 * `AWS` Hosting of all CI/CD resources and permissions to those resources
 * `EC2` Manage instances that run various servers for the application architecture
 * `Maven` Managing dependencies and compiling Java code
-* `Jenkins` Build and test automation of the application
+* `Jenkins` Build and monitor automation of the application deployment process
 * `Ansible` Scripts for uploading new Docker Images and Kubernetes pulling of Images
 * `Tomcat` Manage server for Java application
 * `Docker` Containerize the application and server
