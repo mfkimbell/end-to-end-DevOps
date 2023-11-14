@@ -11,7 +11,7 @@ Visual Workflow
 * `Ansible` Scripts for uploading new Docker Images and Kubernetes pulling of Images
 * `Tomcat` Manage server for Java application
 * `Docker` Containerize the application and server
-* `Kubernetes` Docker container management and fault tolerance
+* `Kubernetes` Docker container management and fault tolerance with load balancer
 * `EKS` AWS management of Kubernetes
 * `eksctl` Command line management of EKS clusters on AWS CLI
 * `kubectl` Command line management of Kubernetes clusters
