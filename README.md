@@ -1,7 +1,7 @@
 ## End-to-End DevOps
 
 Visual Workflow
-<img width="977" alt="Screenshot 2023-11-10 at 3 36 25 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/f5038967-6002-483d-ba4f-a2f213f2e9a0">
+<img width="1742" alt="workflow" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/7ee9a772-4f88-4a31-8e84-4a15bc6adb41">
 
 ### **Tools Used:**
 * `AWS` Hosting of all CI/CD resources and permissions to those resources
