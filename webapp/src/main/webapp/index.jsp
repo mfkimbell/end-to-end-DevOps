@@ -1,6 +1,6 @@
 <form action="action_page.php">
   <div class="container">
-    <h1>Register Page for MK</h1>
+    <h1>Register Page for MK FINISHED</h1>
     <p>Please fill in this form to create an accoun:.</p>
     <hr>
      
