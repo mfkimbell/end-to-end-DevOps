@@ -4,20 +4,21 @@ Visual Workflow
 <img width="977" alt="Screenshot 2023-11-10 at 3 36 25 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/f5038967-6002-483d-ba4f-a2f213f2e9a0">
 
 ### **Tools Used:**
+* `AWS` Hosting of all CI/CD resources and permissions to those resources
 * `EC2` Manage instances that run various servers for the application architecture
 * `Maven` Managing dependencies and compiling Java code
 * `Jenkins` Build and test automation of the application
-* `Ansible` Deployment of the application
+* `Ansible` Scripts for uploading new Docker Images and Kubernetes pulling of Images
 * `Tomcat` Manage server for Java application
-* `Docker` Containerize the application and deploy server
-* `Kubernetes` Docker container management
+* `Docker` Containerize the application and server
+* `Kubernetes` Docker container management and fault tolerance
 * `EKS` AWS management of Kubernetes
 * `eksctl` Command line management of EKS clusters on AWS CLI
 * `kubectl` Command line management of Kubernetes clusters
 
 ### Purpose
 
-Whenever a commit to the webapp on GitHub is made. Jenkins polls every minute to see if changes occur, so, in under a minute, Jenkins will execute a job  via Ansible to build and upload a new version of the Docker container onto DockerHub. After this is complete, another Jenkins CD job will use Ansible to tell the Kubernetes Bootstrap EC2 to pull the new image from DockerHub and deploy it on multiple pods (for high availability) and create a Load balancer users can access to use the application. 
+Purpose was to make an end-to-end CICD pipeline for an application stored on Github through AWS. Changes are made to the application on Github. Jenkins polls every minute to see if changes occur, so, in under a minute, Jenkins will execute a job  via Ansible to build and upload a new version of the Docker container onto DockerHub. After this is complete, another Jenkins CD job will use Ansible to tell the Kubernetes Bootstrap EC2 to pull the new image from DockerHub and deploy it on multiple pods (for high availability) and create a Load balancer users can access to use the application. 
 
 Here are all of the EC2 Instances running:
 
