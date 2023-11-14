@@ -14,6 +14,13 @@ Visual Workflow
 * `eksctl` Command line management of EKS clusters on AWS CLI
 * `kubectl` Command line management of Kubernetes clusters
 
+Whenever a commit is made, changes are updated on the anisble EC2 to the `webapp.war` file that contains the webapp, which is deployed on a Tomcat server. This causes a Jenkins CI job via Ansible to build and upload a new version of the Docker container onto DockerHub. After this is complete, another Jenkins CD job will use Ansible to tell the Kubernetes Bootstrap EC2 to pull the new image from DockerHub and deploy it on multiple pods and create a Load balancer users can access to use the application. 
+
+
+
+
+
+
 SSH into an ec2 instance, and download jenkins and java (we create security groups that allow access from port 8080 for when we need to access our webapps
 
 "service jenkins start" to start the jenkins server
@@ -321,6 +328,19 @@ I ran these jobs manually, I would like them to run automatically and sequential
 <img width="405" alt="Screenshot 2023-11-13 at 5 59 29 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/ff535bbd-9cdc-46a6-97e2-597725651221">
 
 <img width="647" alt="Screenshot 2023-11-13 at 6 00 34 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/2f0cf3a4-ec3f-4b4a-95d4-020df150d91b">
+
+Additionally, I update my kube_deploy.yml to create new pods if the DockerHub Image has changed:
+
+<img width="694" alt="Screenshot 2023-11-13 at 6 07 20 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/e109c8b8-a9b1-4135-8902-dceca5d03bcc">
+
+Finally, we can test the full pipeline. We access the webapp via our loadbalancer on AWS:
+
+<img width="637" alt="Screenshot 2023-11-13 at 6 19 39 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/831a2461-471b-4c42-a271-466846f049fa">
+
+Here is the webapp loaded. I'm going to make a change in VS code and commit a change to the title.
+
+<img width="554" alt="Screenshot 2023-11-13 at 6 20 48 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/ced4667f-0a83-4418-929f-3f499503d585">
+
 
 
 
