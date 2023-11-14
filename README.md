@@ -4,21 +4,41 @@ Visual Workflow
 <img width="977" alt="Screenshot 2023-11-10 at 3 36 25 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/f5038967-6002-483d-ba4f-a2f213f2e9a0">
 
 ### **Tools Used:**
+* `AWS` Hosting of all CI/CD resources and permissions to those resources
+* `EC2` Manage instances that run various servers for the application architecture
 * `Maven` Managing dependencies and compiling Java code
-* `Jenkins` Build and test automation of the application
-* `Ansible` Deployment of the application
+* `Jenkins` Build and monitor automation of the application deployment process
+* `Ansible` Scripts for uploading new Docker Images and Kubernetes pulling of Images
 * `Tomcat` Manage server for Java application
-* `Docker` Containerize the application and deploy server
-* `Kubernetes` Docker container management
+* `Docker` Containerize the application and server
+* `Kubernetes` Docker container management and fault tolerance with load balancer
 * `EKS` AWS management of Kubernetes
 * `eksctl` Command line management of EKS clusters on AWS CLI
 * `kubectl` Command line management of Kubernetes clusters
 
-Whenever a commit is made, changes are updated on the anisble EC2 to the `webapp.war` file that contains the webapp, which is deployed on a Tomcat server. This causes a Jenkins CI job via Ansible to build and upload a new version of the Docker container onto DockerHub. After this is complete, another Jenkins CD job will use Ansible to tell the Kubernetes Bootstrap EC2 to pull the new image from DockerHub and deploy it on multiple pods and create a Load balancer users can access to use the application. 
+### Purpose
+
+Purpose was to make an end-to-end CICD pipeline for an application stored on Github through AWS. Changes are made to the application on Github. Jenkins polls every minute to see if changes occur, so, in under a minute, Jenkins will execute a job  via Ansible to build and upload a new version of the Docker container onto DockerHub. After this is complete, another Jenkins CD job will use Ansible to tell the Kubernetes Bootstrap EC2 to pull the new image from DockerHub and deploy it on multiple pods (for high availability) and create a Load balancer users can access to use the application. 
+
+Here are all of the EC2 Instances running:
+
+<img width="725" alt="Screenshot 2023-11-13 at 6 33 45 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/21eddf1b-5cac-4162-8888-8f49a67aa72f">
+
+Here are all of the Jenkins Jobs working: 
+
+<img width="600" alt="Screenshot 2023-11-13 at 6 42 04 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/5aa1e59c-26cf-499e-b14c-4b2e70d05096">
+
+(For the working version of the app, only `RegApp_CI_Job` and `RegApp_CD_Job` are used)
 
 
 
 
+
+
+
+## Documentation from start to end:
+
+**As I will be deleting all of these AWS resources to prevent charges on my account, I have documented thoroughly this entire process.**
 
 
 SSH into an ec2 instance, and download jenkins and java (we create security groups that allow access from port 8080 for when we need to access our webapps
@@ -259,20 +279,19 @@ It's better practice to use Manifest Files, so we'll implement that now. First w
 
 <img width="484" alt="Screenshot 2023-11-13 at 1 32 36 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/c4f39f17-d61a-4597-a579-3368a3aa98dc">
 
+->
+
 <img width="382" alt="Screenshot 2023-11-13 at 1 25 17 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/9d1bd8c0-d5b9-429d-a6ef-626a17c0189c">
 
 As well as for a load balancer:
 
 <img width="429" alt="Screenshot 2023-11-13 at 1 38 11 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/75b7028d-4257-4e56-9136-2c365f0074b2">
 
+->
+
 <img width="808" alt="Screenshot 2023-11-13 at 1 34 38 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/4dbc0241-b02d-4cd8-b634-d9152a36bf0c">
 
-Now we want to make a deployment from the Docker container on DockerHub. 
-
-original one was to create an image and push to dockerhub
-ADD MORE HERE LATER, NEW YML FILES rewatch part 52-53
-
-later we rename deploy_regapp.yml since now it's no longer going to work through dockerhub, it is now named docker_deployment.yml
+Now we want to make a deployment from the Docker container on DockerHub. Previously, we were using a known Docker Container (nginx), however, I want to use MY docker container. 
 
 <img width="363" alt="Screenshot 2023-11-13 at 4 27 48 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/3d8f86fd-f024-4fde-8d77-b37b5935882f">
 
@@ -284,15 +303,21 @@ Now, because of the Rolling deployment, even if one pod goes down, a new pod wil
 
 <img width="718" alt="Screenshot 2023-11-13 at 4 41 43 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/74340c23-c300-4c31-b1a0-e8781253a9fa">
 
+
 Next, we want Ansible to run these commands instead of running them manually. First we want to create groups so Ansible can connect to the private IPs of the EC2 instances:
+
 
 <img width="227" alt="Screenshot 2023-11-13 at 4 56 51 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/48fa425d-45a2-485b-aed7-94ba1246a020">
 
+
 And now we can see Ansible is able to access all of these servers (by checking uptime):
+
 
 <img width="867" alt="Screenshot 2023-11-13 at 5 00 51 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/f7759f7b-d13b-4814-ba58-94b06d13df36">
 
+
 I make an ansible playbook to execute on kubernetes server:
+
 <img width="521" alt="Screenshot 2023-11-13 at 5 20 06 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/11def968-fc26-4e34-8e3c-2e75533a2890">
 
 We also need a playbook for the service/loadbalancer: 
@@ -341,6 +366,23 @@ Here is the webapp loaded. I'm going to make a change in VS code and commit a ch
 
 <img width="554" alt="Screenshot 2023-11-13 at 6 20 48 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/ced4667f-0a83-4418-929f-3f499503d585">
 
+<img width="743" alt="Screenshot 2023-11-13 at 6 22 38 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/28838264-326b-484f-957c-c3850c45903e">
+
+We can see the DockerHub Image get updated:
+
+<img width="939" alt="Screenshot 2023-11-13 at 6 24 41 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/2c063fd5-8678-4827-9f02-a9c87e13dae4">
+
+We see the CI and CD jobs get executed:
+
+<img width="693" alt="Screenshot 2023-11-13 at 6 28 43 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/8dbb6c98-0cc2-4749-8aa5-dcf1777a508c">
+
+And we can see the new deployment of the pods:
+
+<img width="732" alt="Screenshot 2023-11-13 at 6 41 30 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/c1ad36d7-9678-4062-aae8-8285ba7e2264">
+
+Finally, we can see the updated WebApp:
+
+<img width="539" alt="Screenshot 2023-11-13 at 6 30 21 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/4589564f-046a-4acf-a53b-5b92feee0be7">
 
 
 
