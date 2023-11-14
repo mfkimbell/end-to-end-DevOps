@@ -9,6 +9,10 @@ Visual Workflow
 * `Ansible` Deployment of the application
 * `Tomcat` Manage server for Java application
 * `Docker` Containerize the application and deploy server
+* `Kubernetes` Docker container management
+* `EKS` AWS management of Kubernetes
+* `eksctl` Command line management of EKS clusters on AWS CLI
+* `kubectl` Command line management of Kubernetes clusters
 
 SSH into an ec2 instance, and download jenkins and java (we create security groups that allow access from port 8080 for when we need to access our webapps
 
@@ -216,4 +220,107 @@ Finally, our webapp is up and running again, all done automatically through Jenk
 Here are all of the Jenkins jobs so far, Copy_Artifacts_onto_Ansible is the recent one I was referring to:
 
 <img width="707" alt="Screenshot 2023-11-12 at 6 58 13 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/b1855a5f-0d38-4c45-b129-4c4f8c81076d">
+
+Now, I want to incorporate Kubernetes for recovery/high-availability in case something happens to the Docker container. I make a new EC2 instance, and download awscli and eksctl.
+
+<img width="604" alt="Screenshot 2023-11-13 at 11 52 26 AM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/aae210a4-475a-47a3-aaaa-a061caede435">
+
+
+Then I make an IAM role "eksctl" with EC2, Cloudformation, and IAM Full access, as well as administrator access for now. 
+
+<img width="453" alt="Screenshot 2023-11-13 at 11 50 07 AM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/965c7121-b485-4534-be61-10b176cd1ded">
+
+I run "eksctl create cluster" along with other specifications, and we can see the cluster up and running in Cloudformation:
+
+<img width="613" alt="Screenshot 2023-11-13 at 12 49 45 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/440f741c-1950-4f53-a320-6cb80bd07c1d">
+
+I run "kubectl run webapp --image=http" to create a webapp pod, and I run "kubectl create deployment demo-nginx --image=nginx --port=80 --replicas=2" to create an "nginx" deployment of two replica pods. 
+
+<img width="453" alt="Screenshot 2023-11-13 at 1 03 08 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/e3026ce5-a741-481c-b698-6800cfc93a4b">
+
+Then, I expose the application with a load balancer on port 80:
+
+<img width="914" alt="Screenshot 2023-11-13 at 1 06 11 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/c10fa513-6fb6-474e-b9ea-7b41eb43bea7">
+
+<img width="624" alt="Screenshot 2023-11-13 at 1 07 08 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/ac52a1de-ac54-4dda-816d-f94b2741205e">
+
+Through the external address, we can see the Nginx page:
+
+<img width="738" alt="Screenshot 2023-11-13 at 1 08 44 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/0bc80cb7-14a2-4090-ab82-6b368b50aa5a">
+
+It's better practice to use Manifest Files, so we'll implement that now. First we create a yml file with pod creation instructions: 
+
+<img width="484" alt="Screenshot 2023-11-13 at 1 32 36 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/c4f39f17-d61a-4597-a579-3368a3aa98dc">
+
+<img width="382" alt="Screenshot 2023-11-13 at 1 25 17 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/9d1bd8c0-d5b9-429d-a6ef-626a17c0189c">
+
+As well as for a load balancer:
+
+<img width="429" alt="Screenshot 2023-11-13 at 1 38 11 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/75b7028d-4257-4e56-9136-2c365f0074b2">
+
+<img width="808" alt="Screenshot 2023-11-13 at 1 34 38 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/4dbc0241-b02d-4cd8-b634-d9152a36bf0c">
+
+Now we want to make a deployment from the Docker container on DockerHub. 
+
+original one was to create an image and push to dockerhub
+ADD MORE HERE LATER, NEW YML FILES rewatch part 52-53
+
+later we rename deploy_regapp.yml since now it's no longer going to work through dockerhub, it is now named docker_deployment.yml
+
+<img width="363" alt="Screenshot 2023-11-13 at 4 27 48 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/3d8f86fd-f024-4fde-8d77-b37b5935882f">
+
+Accessing our webapp from our new load balancer (produced by aws):
+
+<img width="534" alt="Screenshot 2023-11-13 at 4 40 00 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/d70a7ef7-37a9-4210-bb6d-2973d71e2e1c">
+
+Now, because of the Rolling deployment, even if one pod goes down, a new pod will be deployed to take it's place:
+
+<img width="718" alt="Screenshot 2023-11-13 at 4 41 43 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/74340c23-c300-4c31-b1a0-e8781253a9fa">
+
+Next, we want Ansible to run these commands instead of running them manually. First we want to create groups so Ansible can connect to the private IPs of the EC2 instances:
+
+<img width="227" alt="Screenshot 2023-11-13 at 4 56 51 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/48fa425d-45a2-485b-aed7-94ba1246a020">
+
+And now we can see Ansible is able to access all of these servers (by checking uptime):
+
+<img width="867" alt="Screenshot 2023-11-13 at 5 00 51 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/f7759f7b-d13b-4814-ba58-94b06d13df36">
+
+I make an ansible playbook to execute on kubernetes server:
+<img width="521" alt="Screenshot 2023-11-13 at 5 20 06 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/11def968-fc26-4e34-8e3c-2e75533a2890">
+
+We also need a playbook for the service/loadbalancer: 
+
+<img width="466" alt="Screenshot 2023-11-13 at 5 21 50 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/2baa9964-3660-4002-9b14-7b976306e7aa">
+
+Now that it's working, I want to execute these playbooks from Jenkins like before:
+
+<img width="533" alt="Screenshot 2023-11-13 at 5 30 00 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/098b88ce-efab-4f14-9701-346711471f7b">
+
+<img width="704" alt="Screenshot 2023-11-13 at 5 32 41 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/743f6f0d-11d0-426a-b8c4-3f67788f7207">
+
+We can see before I had no pods up and running, and after running the job they are up and running again:
+
+<img width="712" alt="Screenshot 2023-11-13 at 5 33 28 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/5f9ff6ab-4ea1-4b2e-84d2-e2edd29a5c11">
+
+In hindsight, these should be merged, so now we only need to run kube_deploy.yml:
+
+<img width="497" alt="Screenshot 2023-11-13 at 5 35 36 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/b93805d7-1f68-4761-8294-117fcd888cf8">
+
+<img width="531" alt="Screenshot 2023-11-13 at 5 36 16 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/1e1421cd-740c-4bbe-9d21-eb7d064a33f8">
+
+Now, on Jenkins, we need to update our (previously) deployment job and change it to instead use ansible to create and upload a new image onto DockerHub. The highlighted section is what will be deleted that was previously from the "Copy_Artifacts_Onto_Ansible" job:
+
+<img width="532" alt="Screenshot 2023-11-13 at 5 49 10 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/c57953a1-6643-4c76-bb05-e3744500bceb">
+
+We rename our "Deploy on Kubernetes" to "RegApp_CD_Job" and we call our altered "Copy_Artifacts_Onto_Ansible" job "RegApp_CI_Job" for clairty:
+
+<img width="694" alt="Screenshot 2023-11-13 at 5 53 05 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/566269c1-517b-49a5-b3b4-e8fee2e23e36">
+
+I ran these jobs manually, I would like them to run automatically and sequentially:
+
+<img width="405" alt="Screenshot 2023-11-13 at 5 59 29 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/ff535bbd-9cdc-46a6-97e2-597725651221">
+
+<img width="647" alt="Screenshot 2023-11-13 at 6 00 34 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/2f0cf3a4-ec3f-4b4a-95d4-020df150d91b">
+
+
 
