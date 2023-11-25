@@ -20,6 +20,10 @@ Visual Workflow
 
 Purpose was to make an end-to-end CICD pipeline for an application stored on Github through AWS. Changes are made to the application on Github. Jenkins polls every minute to see if changes occur, so, in under a minute, Jenkins will execute a job  via Ansible to build and upload a new version of the Docker container onto DockerHub. After this is complete, another Jenkins CD job will use Ansible to tell the Kubernetes Bootstrap EC2 to pull the new image from DockerHub and deploy it on multiple pods (for high availability) and create a Load balancer users can access to use the application. 
 
+---
+My only regret for this project was not keeping all of the files I wrote saved before destroying all of my AWS resources, would have made similar projects in the future more easy to replicate.
+---
+
 Here are all of the EC2 Instances running:
 
 <img width="725" alt="Screenshot 2023-11-13 at 6 33 45 PM" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/21eddf1b-5cac-4162-8888-8f49a67aa72f">
@@ -38,7 +42,7 @@ Here are all of the Jenkins Jobs working:
 
 ## Documentation from start to end:
 
-**As I will be deleting all of these AWS resources to prevent charges on my account, I have documented thoroughly this entire process.**
+## **As I will be deleting all of these AWS resources to prevent charges on my account, I have documented thoroughly this entire process.**
 
 
 SSH into an ec2 instance, and download jenkins and java (we create security groups that allow access from port 8080 for when we need to access our webapps
