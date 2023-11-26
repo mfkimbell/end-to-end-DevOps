@@ -1,4 +1,4 @@
-## End-to-End DevOps
+## End-to-End DevOps Pipeline
 
 <img width="1742" alt="workflow devops" src="https://github.com/mfkimbell/end-to-end-DevOps/assets/107063397/e2ddc927-202c-4431-9469-b84d6a3855b0">
 
