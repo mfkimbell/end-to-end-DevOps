@@ -11,4 +11,4 @@
       command: kubectl apply -f regapp-service.yml
 
     - name: update deployment with new pods if image updated in docker hub
-      command: kubectl rollout restart deployment.apps/valaxy-regapp
+      command: kubectl rollout restart deployment.apps/mfkimbell-regapp
