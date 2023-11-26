@@ -20,9 +20,6 @@
 
 Purpose was to make an end-to-end CICD pipeline for an application stored on Github through AWS. Changes are made to the application on Github. Jenkins polls every minute to see if changes occur, so, in under a minute, Jenkins will execute a job  via Ansible to build and upload a new version of the Docker container onto DockerHub. After this is complete, another Jenkins CD job will use Ansible to tell the Kubernetes Bootstrap EC2 to pull the new image from DockerHub and deploy it on multiple pods (for high availability) and create a Load balancer users can access to use the application. 
 
----
-My only regret for this project was not keeping all of the files I wrote saved before destroying all of my AWS resources, would have made similar projects in the future more easy to replicate.
----
 
 Here are all of the EC2 Instances running:
 
